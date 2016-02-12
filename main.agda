@@ -24,7 +24,7 @@ print (Ok (Op .2 Plus ∷ xs)) = putStr "+ " IOM.>>= λ _ → print (Ok xs)
 print (Ok (Op .2 Mul ∷ xs)) = putStr "* " IOM.>>= λ _ → print (Ok xs)
 
 main = run (
-    putStrLn "Hello" IOM.>>= λ _ → 
-    putStrLn test IOM.>>= λ _ →
-    print (parse test ResM.>>= eval) IOM.>>= λ _ →
+    putStr "Enter Calculation: " IOM.>>= λ _ → 
+    getLine IOM.>>= λ input →
+    print (parse input ResM.>>= eval) IOM.>>= λ _ →
     putStrLn "")

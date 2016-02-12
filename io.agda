@@ -22,13 +22,16 @@ module Primitive where
   {-# COMPILED _>>=_  (\_ _ -> (>>=)) #-}
 
   {-# IMPORT Data.Text.IO #-}
+  {-# IMPORT System.IO #-}
 
   postulate
     putStr : String → IO Unit
     putStrLn : String → IO Unit
+    getLine : IO String
 
   {-# COMPILED putStr putStr #-}
   {-# COMPILED putStrLn putStrLn #-}
+  {-# COMPILED getLine (System.IO.hFlush System.IO.stdout >> getLine) #-}
 
 data IO (T : Set) : Set₁ where
   lift : Primitive.IO T → IO T
@@ -43,8 +46,6 @@ monad-io = Base.monad ret bind where
 module MonadIO = Monad.Monad monad-io
 open MonadIO
 
-{-# NON_TERMINATING #-}
-
 run : {T : Set} → IO T → Primitive.IO T
 run (lift m) = m
 run (ret x) = Primitive.return x
@@ -58,3 +59,6 @@ putStr s = lift (Primitive.putStr s) >>= λ _ → return unit
 
 putStrLn : String → IO Unit
 putStrLn s = lift (Primitive.putStrLn s) >>= λ _ → return unit
+
+getLine : IO String
+getLine = lift (Primitive.getLine) >>= λ input → return input
