@@ -28,13 +28,14 @@ eval : List Instr → EvalResult
 eval instrs = run-eval instrs []
 
 -- Proofs
-{-
-push-value : ∀ (v : Value) → eval [ Push v ] ≡ Some [ v ]
+push-value : ∀ (v : Value) → eval [ Push v ] ≡ Ok [ v ]
 push-value _ = refl
 
-push-pop : ∀ (v : Value) → eval (Push v ∷ Pop ∷ []) ≡ Some []
+push-pop : ∀ (v : Value) → eval (Push v ∷ Pop ∷ []) ≡ Ok []
 push-pop _ = refl
 
-apply-add : ∀ (x y : ℕ) → eval (Push (Val (Int y)) ∷ Push (Val (Int x)) ∷ Push (Op 2 Plus) ∷ Apply ∷ []) ≡ Some [ Val (Int (x + y)) ]
+pop-empty : eval [ Pop ] ≡ Err EmptyPop
+pop-empty = refl
+
+apply-add : ∀ (x y : Operatable) → eval (Push (Val y) ∷ Push (Val x) ∷ Push (Op 2 Plus) ∷ Apply ∷ []) ≡ Ok [ Val (Int (as-nat x + as-nat y)) ]
 apply-add _ _ = refl
--}

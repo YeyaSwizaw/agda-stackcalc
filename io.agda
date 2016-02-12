@@ -46,6 +46,8 @@ monad-io = Base.monad ret bind where
 module MonadIO = Monad.Monad monad-io
 open MonadIO
 
+
+{-# NON_TERMINATING #-}
 run : {T : Set} → IO T → Primitive.IO T
 run (lift m) = m
 run (ret x) = Primitive.return x
